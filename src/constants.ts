@@ -1,11 +1,10 @@
 import JSBI from 'jsbi'
 
-// exports for external consumption
 export type BigintIsh = JSBI | bigint | string
 
 export enum ChainId {
   MAINNET = 1,
-  BAHAMUT = 5165,
+  BAHAMUT = 5165
 }
 
 export enum TradeType {
@@ -25,7 +24,6 @@ export const INIT_CODE_HASH = '0x79cd523bc695c4f4a15256b1eddb22624ae455e51c452c3
 
 export const MINIMUM_LIQUIDITY = JSBI.BigInt(1000)
 
-// exports for internal consumption
 export const ZERO = JSBI.BigInt(0)
 export const ONE = JSBI.BigInt(1)
 export const TWO = JSBI.BigInt(2)

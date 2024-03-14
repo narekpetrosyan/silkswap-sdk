@@ -2,7 +2,7 @@ import invariant from 'tiny-invariant'
 
 import { ChainId, ONE, TradeType, ZERO } from '../constants'
 import { sortedInsert } from '../utils'
-import { Currency, ETHER } from './currency'
+import { Currency, FTN } from './currency'
 import { CurrencyAmount } from './fractions/currencyAmount'
 import { Fraction } from './fractions/fraction'
 import { Percent } from './fractions/percent'
@@ -84,18 +84,18 @@ export interface BestTradeOptions {
 
 /**
  * Given a currency amount and a chain ID, returns the equivalent representation as the token amount.
- * In other words, if the currency is ETHER, returns the WETH token amount for the given chain. Otherwise, returns
+ * In other words, if the currency is FTN, returns the WETH token amount for the given chain. Otherwise, returns
  * the input currency amount.
  */
 function wrappedAmount(currencyAmount: CurrencyAmount, chainId: ChainId): TokenAmount {
   if (currencyAmount instanceof TokenAmount) return currencyAmount
-  if (currencyAmount.currency === ETHER) return new TokenAmount(WETH[chainId], currencyAmount.raw)
+  if (currencyAmount.currency === FTN) return new TokenAmount(WETH[chainId], currencyAmount.raw)
   invariant(false, 'CURRENCY')
 }
 
 function wrappedCurrency(currency: Currency, chainId: ChainId): Token {
   if (currency instanceof Token) return currency
-  if (currency === ETHER) return WETH[chainId]
+  if (currency === FTN) return WETH[chainId]
   invariant(false, 'CURRENCY')
 }
 
@@ -179,13 +179,13 @@ export class Trade {
     this.inputAmount =
       tradeType === TradeType.EXACT_INPUT
         ? amount
-        : route.input === ETHER
+        : route.input === FTN
         ? CurrencyAmount.ether(amounts[0].raw)
         : amounts[0]
     this.outputAmount =
       tradeType === TradeType.EXACT_OUTPUT
         ? amount
-        : route.output === ETHER
+        : route.output === FTN
         ? CurrencyAmount.ether(amounts[amounts.length - 1].raw)
         : amounts[amounts.length - 1]
     this.executionPrice = new Price(
@@ -280,8 +280,9 @@ export class Trade {
       try {
         ;[amountOut] = pair.getOutputAmount(amountIn)
       } catch (error) {
+        const _error = error as { isInsufficientInputAmountError: any }
         // input too low
-        if (error.isInsufficientInputAmountError) {
+        if (_error.isInsufficientInputAmountError) {
           continue
         }
         throw error
@@ -368,8 +369,9 @@ export class Trade {
       try {
         ;[amountIn] = pair.getInputAmount(amountOut)
       } catch (error) {
+        const _error = error as { isInsufficientReservesError: any }
         // not enough liquidity in this pair
-        if (error.isInsufficientReservesError) {
+        if (_error.isInsufficientReservesError) {
           continue
         }
         throw error
