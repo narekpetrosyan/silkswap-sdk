@@ -13,7 +13,7 @@
     "silkswap",
     "bahamut"
   ],
-  "module": "dist/sdk.esm.js",
+  "module": "dist/silkswap-sdk.esm.js",
   "scripts": {
     "lint": "tsdx lint src",
     "build": "tsdx build",
